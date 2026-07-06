@@ -92,8 +92,10 @@
     color:rgba(255,255,255,.7);margin-top:6px;text-shadow:0 1px 6px rgba(0,0,0,.7);
   }
   .hint{
-    position:absolute;left:16px;right:16px;bottom:84px;text-align:center;z-index:3;
-    font-size:14px;font-weight:500;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.9);
+    position:absolute;left:50%;transform:translateX(-50%);bottom:80px;z-index:3;
+    width:max-content;max-width:calc(100% - 40px);text-align:center;
+    font-size:13px;font-weight:500;color:#fff;line-height:1.5;
+    background:rgba(28,28,30,.9);padding:9px 16px;border-radius:14px;   /* capsule: stays legible over the count */
   }
   /* signal strip */
   .wave-wrap{
@@ -145,11 +147,16 @@
   }
   .icon-btn svg{width:22px;height:22px}
   .icon-btn.on{color:var(--go)}
-  /* collapsible settings panel — iOS inset grouped list */
-  .settings{display:flex;flex-direction:column;background:var(--panel);border-radius:14px;overflow:hidden}
-  .settings[hidden]{display:none}
+  /* settings — bottom sheet modal */
+  .modal{position:fixed;inset:0;z-index:25;background:rgba(0,0,0,.55);
+    display:flex;align-items:flex-end;justify-content:center}
+  .modal[hidden]{display:none}
+  .modal-card{width:100%;max-width:520px;background:var(--panel);
+    border-radius:20px 20px 0 0;padding:6px 16px calc(18px + env(safe-area-inset-bottom))}
+  .grabber{width:36px;height:5px;border-radius:3px;background:#48484a;margin:6px auto 4px}
+  .modal-title{text-align:center;font-size:15px;font-weight:600;padding:4px 0 6px}
   .set-row{
-    display:flex;align-items:center;gap:12px;min-height:48px;padding:6px 16px;
+    display:flex;align-items:center;gap:12px;min-height:48px;padding:6px 4px;
   }
   .set-row + .set-row{border-top:.5px solid var(--line)}
   .set-row > label, .set-row > .set-label{font-size:15px;color:var(--paper);flex:none;min-width:64px}
@@ -170,11 +177,6 @@
   .switch.on{background:var(--go)}
   .switch.on::after{left:22px}
   .switch:active{transform:none}
-  .export-btn{
-    flex:1;display:flex;align-items:center;justify-content:center;gap:7px;
-    padding:11px 8px;background:var(--fill);color:var(--paper);font-size:13px;border-radius:10px;
-  }
-  .export-btn svg{width:16px;height:16px;flex:none}
   .count.done{color:var(--lime);text-shadow:0 0 44px rgba(175,252,3,.45)}
 
   /* ---- history page (Apple Health-style records) ---- */
@@ -265,7 +267,13 @@
       <svg viewBox="0 0 512 512" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M262.29 192.31a64 64 0 1 0 57.4 57.4a64.13 64.13 0 0 0-57.4-57.4M416.39 256a154 154 0 0 1-1.53 20.79l45.21 35.46a10.81 10.81 0 0 1 2.45 13.75l-42.77 74a10.81 10.81 0 0 1-13.14 4.59l-44.9-18.08a16.11 16.11 0 0 0-15.17 1.75A164.5 164.5 0 0 1 325 400.8a15.94 15.94 0 0 0-8.82 12.14l-6.73 47.89a11.08 11.08 0 0 1-10.68 9.17h-85.54a11.11 11.11 0 0 1-10.69-8.87l-6.72-47.82a16.07 16.07 0 0 0-9-12.22a155 155 0 0 1-21.46-12.57a16 16 0 0 0-15.11-1.71l-44.89 18.07a10.81 10.81 0 0 1-13.14-4.58l-42.77-74a10.8 10.8 0 0 1 2.45-13.75l38.21-30a16.05 16.05 0 0 0 6-14.08c-.36-4.17-.58-8.33-.58-12.5s.21-8.27.58-12.35a16 16 0 0 0-6.07-13.94l-38.19-30A10.81 10.81 0 0 1 49.48 186l42.77-74a10.81 10.81 0 0 1 13.14-4.59l44.9 18.08a16.11 16.11 0 0 0 15.17-1.75A164.5 164.5 0 0 1 187 111.2a15.94 15.94 0 0 0 8.82-12.14l6.73-47.89A11.08 11.08 0 0 1 213.23 42h85.54a11.11 11.11 0 0 1 10.69 8.87l6.72 47.82a16.07 16.07 0 0 0 9 12.22a155 155 0 0 1 21.46 12.57a16 16 0 0 0 15.11 1.71l44.89-18.07a10.81 10.81 0 0 1 13.14 4.58l42.77 74a10.8 10.8 0 0 1-2.45 13.75l-38.21 30a16.05 16.05 0 0 0-6.05 14.08c.33 4.14.55 8.3.55 12.47"/></svg>
     </button>
   </div>
-  <div class="settings" id="settings" hidden>
+</div>
+
+<!-- settings — bottom sheet -->
+<div class="modal" id="settings" hidden>
+  <div class="modal-card">
+    <div class="grabber"></div>
+    <div class="modal-title">设置</div>
     <div class="set-row">
       <label for="sens">灵敏度</label>
       <input type="range" id="sens" min="1" max="10" value="5" step="1">
@@ -287,16 +295,6 @@
     <div class="set-row">
       <span class="set-label">计数提示音</span>
       <button id="btnSound" class="switch on" role="switch" aria-checked="true" aria-label="计数提示音"></button>
-    </div>
-    <div class="set-row">
-      <button id="btnExport" class="export-btn">
-        <svg viewBox="0 0 512 512" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M336 192h40a40 40 0 0 1 40 40v192a40 40 0 0 1-40 40H136a40 40 0 0 1-40-40V232a40 40 0 0 1 40-40h40m160-64l-80-80l-80 80m80 193V48"/></svg>
-        导出数据
-      </button>
-      <button id="btnChart" class="export-btn">
-        <svg viewBox="0 0 512 512" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="48" height="160" x="64" y="320" rx="8" ry="8"/><rect width="48" height="256" x="288" y="224" rx="8" ry="8"/><rect width="48" height="368" x="400" y="112" rx="8" ry="8"/><rect width="48" height="448" x="176" y="32" rx="8" ry="8"/></svg>
-        配速图
-      </button>
     </div>
   </div>
 </div>
@@ -347,8 +345,6 @@
   const algoSeg = document.getElementById('algoSeg');
   const btnSettings = document.getElementById('btnSettings');
   const settingsEl = document.getElementById('settings');
-  const btnExport = document.getElementById('btnExport');
-  const btnChart = document.getElementById('btnChart');
   const btnHistory = document.getElementById('btnHistory');
   const histPage = document.getElementById('histPage');
   const histDone = document.getElementById('histDone');
@@ -986,7 +982,6 @@
   }
   // export the session: each +1 timing, its vertical amplitude, interruption gaps
   // one export path for the live session and any saved record
-  function sessionData(){ return { jumps: jumpLog, breaks: breakLog, count, durMs: Math.round(elapsed), algo, mode }; }
   function recordData(r){ return { jumps: r.jumps, breaks: r.breaks || [], count: r.count, durMs: r.durationMs, algo: r.algo, mode: r.mode }; }
   async function shareFile(file, title){
     if(navigator.canShare && navigator.canShare({ files: [file] })){
@@ -1181,13 +1176,13 @@
     btnSound.classList.toggle('on', soundOn);
     btnSound.setAttribute('aria-checked', soundOn);
   });
-  btnSettings.addEventListener('click', ()=>{
-    settingsEl.hidden = !settingsEl.hidden;
-    perfEl.hidden = settingsEl.hidden;                 // show the perf readout with the panel
-    btnSettings.classList.toggle('on', !settingsEl.hidden);
-  });
-  btnExport.addEventListener('click', () => exportJSON(sessionData()));
-  btnChart.addEventListener('click', () => exportChart(sessionData()));
+  function setSettingsOpen(open){
+    settingsEl.hidden = !open;
+    perfEl.hidden = !open;                             // show the perf readout with the sheet
+    btnSettings.classList.toggle('on', open);
+  }
+  btnSettings.addEventListener('click', () => setSettingsOpen(settingsEl.hidden));
+  settingsEl.addEventListener('click', (e) => { if(e.target === settingsEl) setSettingsOpen(false); });
   btnHistory.addEventListener('click', () => { saveRecord(); renderHistory(); histPage.hidden = false; });
   histDone.addEventListener('click', () => { histPage.hidden = true; });
   histList.addEventListener('click', (e) => {

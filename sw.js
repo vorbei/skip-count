@@ -1,7 +1,7 @@
 // Jump-rope counter service worker: installable + offline.
 // Shell (index.html) = network-first so updates show; heavy immutable assets
 // (MediaPipe wasm + model, icons) = cache-first so it's fast and works offline.
-const CACHE = 'skip-v5';
+const CACHE = 'skip-v6';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-180.png'];
 
 self.addEventListener('install', (e) => {
