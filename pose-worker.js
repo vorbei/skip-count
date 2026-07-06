@@ -1,14 +1,16 @@
 // Pose inference off the main thread. The UI/video/skeleton stay smooth even when
 // a single inference is slow (esp. on CPU). Main thread transfers an ImageBitmap
 // per frame; we return only the landmark array it needs.
-import { PoseLandmarker, FilesetResolver } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs';
+import { PoseLandmarker, FilesetResolver } from './mediapipe/vision_bundle.mjs';
 
-const MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task';
+// self-hosted assets, resolved relative to this worker's URL (works at root OR /subpath/)
+const WASM_PATH = new URL('mediapipe/wasm', location.href).href;
+const MODEL_URL = new URL('mediapipe/pose_landmarker_lite.task', location.href).href;
 let landmarker = null, ready = false;
 
 async function init(){
   try{
-    const fileset = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm');
+    const fileset = await FilesetResolver.forVisionTasks(WASM_PATH);
     const opts = (delegate) => ({
       baseOptions:{ modelAssetPath: MODEL_URL, delegate },
       runningMode:'VIDEO', numPoses:1,

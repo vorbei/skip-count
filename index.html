@@ -12,6 +12,10 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-192.png">
+<!-- Google AdSense (auto ads). Replace ca-pub-XXXXXXXXXXXXXXXX with your publisher ID and
+     add this site in your AdSense account. Loaded async so it degrades harmlessly where
+     Google is blocked (e.g. mainland China) — the app still works, ads just won't show. -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
 <style>
   :root{
     --ink:#0e1420;
@@ -321,8 +325,9 @@
   }
 
   // ---------- pose landmarker (MediaPipe Tasks Vision, off-thread + inline fallback) ----------
-  const MP_VER = '0.10.14';
-  const MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task';
+  // self-hosted MediaPipe assets, resolved against the page's base (works at root OR /subpath/)
+  const MP_WASM  = new URL('mediapipe/wasm', document.baseURI).href;
+  const MODEL_URL = new URL('mediapipe/pose_landmarker_lite.task', document.baseURI).href;
   let poseReady = false, poseFailed = false, poseTs = 0;
   let poseDelegate = '?', poseMs = 0, poseFps = 0, lastPoseWall = 0;   // perf diagnostics
   let poseWorker = null, useWorker = false, workerBusy = false, lastLm = null;
@@ -400,9 +405,8 @@
   // ---------- inline fallback (synchronous, main thread) ----------
   async function initPoseInline(){
     try{
-      const vision = await import(`https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${MP_VER}/vision_bundle.mjs`);
-      const fileset = await vision.FilesetResolver.forVisionTasks(
-        `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${MP_VER}/wasm`);
+      const vision = await import(new URL('mediapipe/vision_bundle.mjs', document.baseURI).href);
+      const fileset = await vision.FilesetResolver.forVisionTasks(MP_WASM);
       const opts = (delegate) => ({
         baseOptions:{ modelAssetPath: MODEL_URL, delegate },
         runningMode:'VIDEO', numPoses:1,
