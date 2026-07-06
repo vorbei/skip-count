@@ -1,0 +1,13 @@
+# dev artifacts / data — not part of the app
+venv/
+node_modules/
+__pycache__/
+*.pyc
+*.mp4
+*.mov
+*.MOV
+pose_*.json
+pose_signal*.json
+*.task
+debug*.mp4
+.DS_Store
