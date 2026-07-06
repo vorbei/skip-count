@@ -176,6 +176,43 @@
   }
   .export-btn svg{width:16px;height:16px;flex:none}
   .count.done{color:var(--lime);text-shadow:0 0 44px rgba(175,252,3,.45)}
+
+  /* ---- history page (Apple Health-style records) ---- */
+  .hist{position:fixed;inset:0;z-index:20;background:var(--ink);display:flex;flex-direction:column}
+  .hist[hidden]{display:none}
+  .hist-head{display:flex;align-items:center;justify-content:space-between;
+    padding:max(14px,env(safe-area-inset-top)) 20px 6px}
+  .hist-head h2{font-size:32px;font-weight:800;letter-spacing:-.02em}
+  .hist-done{flex:0 0 auto;background:none;color:var(--go);font-size:17px;font-weight:600;padding:8px 4px}
+  .hist-scroll{flex:1;overflow-y:auto;padding:8px 16px calc(24px + env(safe-area-inset-bottom));
+    -webkit-overflow-scrolling:touch}
+  .hist-sum{background:var(--panel);border-radius:14px;padding:14px 8px;margin-bottom:16px;
+    display:grid;grid-template-columns:1fr 1fr 1fr;text-align:center}
+  .hist-sum b{display:block;font-family:var(--num);font-size:24px;font-weight:700;line-height:1.15}
+  .hist-sum span{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--dim)}
+  .c-lime{color:var(--lime)} .c-pink{color:var(--hot)} .c-white{color:#fff}
+  .hist-list{background:var(--panel);border-radius:14px;overflow:hidden}
+  .hist-row{display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px 12px 16px;
+    background:none;border-radius:0;text-align:left;font-weight:500}
+  .hist-row + .hist-row{border-top:.5px solid var(--line)}
+  .hist-row .val{flex:none;min-width:76px;font-family:var(--num);font-size:24px;font-weight:700;color:var(--lime)}
+  .hist-row .val small{font-size:12px;font-weight:600;color:var(--dim);margin-left:2px}
+  .hist-row .meta{flex:1;font-size:13px;color:var(--dim);line-height:1.45}
+  .hist-row .date{flex:none;font-size:13px;color:var(--dim)}
+  .hist-row .chev{flex:none;color:#48484a;font-size:20px;font-weight:600;line-height:1}
+  .hist-empty{text-align:center;color:var(--dim);padding:44px 16px;font-size:14px}
+  /* iOS action sheet */
+  .sheet{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.55);
+    display:flex;align-items:flex-end;justify-content:center;padding:10px}
+  .sheet[hidden]{display:none}
+  .sheet-card{width:100%;max-width:430px;display:flex;flex-direction:column;gap:9px;
+    padding-bottom:max(6px,env(safe-area-inset-bottom))}
+  .sheet-group{background:#252527;border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+  .sheet-title{text-align:center;font-size:13px;color:var(--dim);padding:12px 16px 10px}
+  .sheet-btn{width:100%;padding:16px;background:none;border-radius:0;font-size:17px;font-weight:400;color:#0a84ff}
+  .sheet-btn + .sheet-btn{border-top:.5px solid var(--line)}
+  .sheet-btn.destructive{color:#ff453a}
+  .sheet-btn.cancel{font-weight:600;background:#252527;border-radius:14px}
   @media (prefers-reduced-motion:reduce){
     .count{transition:none}.cam-dot.live{animation:none}
   }
@@ -221,6 +258,9 @@
       <svg viewBox="0 0 512 512" fill="none" stroke="currentColor" stroke-width="32" aria-hidden="true"><path stroke-linecap="round" stroke-miterlimit="10" d="M320 146s24.36-12-64-12a160 160 0 1 0 160 160"/><path stroke-linecap="round" stroke-linejoin="round" d="m256 58l80 80l-80 80"/></svg>
     </button>
     <button id="btnMain">开始</button>
+    <button id="btnHistory" class="icon-btn" title="记录" aria-label="记录">
+      <svg viewBox="0 0 512 512" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M160 144h288M160 256h288M160 368h288"/><circle cx="80" cy="144" r="16"/><circle cx="80" cy="256" r="16"/><circle cx="80" cy="368" r="16"/></svg>
+    </button>
     <button id="btnSettings" class="icon-btn" title="设置" aria-label="设置">
       <svg viewBox="0 0 512 512" fill="none" stroke="currentColor" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M262.29 192.31a64 64 0 1 0 57.4 57.4a64.13 64.13 0 0 0-57.4-57.4M416.39 256a154 154 0 0 1-1.53 20.79l45.21 35.46a10.81 10.81 0 0 1 2.45 13.75l-42.77 74a10.81 10.81 0 0 1-13.14 4.59l-44.9-18.08a16.11 16.11 0 0 0-15.17 1.75A164.5 164.5 0 0 1 325 400.8a15.94 15.94 0 0 0-8.82 12.14l-6.73 47.89a11.08 11.08 0 0 1-10.68 9.17h-85.54a11.11 11.11 0 0 1-10.69-8.87l-6.72-47.82a16.07 16.07 0 0 0-9-12.22a155 155 0 0 1-21.46-12.57a16 16 0 0 0-15.11-1.71l-44.89 18.07a10.81 10.81 0 0 1-13.14-4.58l-42.77-74a10.8 10.8 0 0 1 2.45-13.75l38.21-30a16.05 16.05 0 0 0 6-14.08c-.36-4.17-.58-8.33-.58-12.5s.21-8.27.58-12.35a16 16 0 0 0-6.07-13.94l-38.19-30A10.81 10.81 0 0 1 49.48 186l42.77-74a10.81 10.81 0 0 1 13.14-4.59l44.9 18.08a16.11 16.11 0 0 0 15.17-1.75A164.5 164.5 0 0 1 187 111.2a15.94 15.94 0 0 0 8.82-12.14l6.73-47.89A11.08 11.08 0 0 1 213.23 42h85.54a11.11 11.11 0 0 1 10.69 8.87l6.72 47.82a16.07 16.07 0 0 0 9 12.22a155 155 0 0 1 21.46 12.57a16 16 0 0 0 15.11 1.71l44.89-18.07a10.81 10.81 0 0 1 13.14 4.58l42.77 74a10.8 10.8 0 0 1-2.45 13.75l-38.21 30a16.05 16.05 0 0 0-6.05 14.08c.33 4.14.55 8.3.55 12.47"/></svg>
     </button>
@@ -261,6 +301,31 @@
   </div>
 </div>
 
+<!-- history page (Apple Health-style saved records) -->
+<div class="hist" id="histPage" hidden>
+  <div class="hist-head">
+    <h2>记录</h2>
+    <button class="hist-done" id="histDone">完成</button>
+  </div>
+  <div class="hist-scroll">
+    <div class="hist-sum" id="histSum"></div>
+    <div class="hist-list" id="histList"></div>
+  </div>
+</div>
+
+<!-- record action sheet -->
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet-card">
+    <div class="sheet-group">
+      <div class="sheet-title" id="sheetTitle"></div>
+      <button class="sheet-btn" id="sheetChart">导出配速图</button>
+      <button class="sheet-btn" id="sheetJSON">导出数据</button>
+      <button class="sheet-btn destructive" id="sheetDelete">删除记录</button>
+    </div>
+    <button class="sheet-btn cancel" id="sheetCancel">取消</button>
+  </div>
+</div>
+
 <script>
 (() => {
   const video = document.getElementById('video');
@@ -284,6 +349,13 @@
   const settingsEl = document.getElementById('settings');
   const btnExport = document.getElementById('btnExport');
   const btnChart = document.getElementById('btnChart');
+  const btnHistory = document.getElementById('btnHistory');
+  const histPage = document.getElementById('histPage');
+  const histDone = document.getElementById('histDone');
+  const histSum = document.getElementById('histSum');
+  const histList = document.getElementById('histList');
+  const sheetEl = document.getElementById('sheet');
+  const sheetTitle = document.getElementById('sheetTitle');
   const wave = document.getElementById('wave');
   const wctx = wave.getContext('2d');
 
@@ -708,6 +780,7 @@
   }
   function addJump(now, amp){
     if(phase === 'armed'){ phase = 'live'; startTs = now; }   // first jump starts the clock
+    recSaved = false;                                          // there is now unsaved data
     count++;
     jumpTimes.push(now);
     while(jumpTimes.length > 12) jumpTimes.shift();
@@ -887,6 +960,7 @@
     finished = true; phase = 'idle';
     stop();
     elapsed = TIMED_MS;
+    saveRecord();                            // auto-save the completed timed session
     setTime('0:00');
     countEl.classList.add('done');
     btnMain.textContent = '再来一次'; btnMain.classList.remove('running');
@@ -896,6 +970,7 @@
     if(navigator.vibrate) navigator.vibrate([40,60,40]);
   }
   function resetRun(){
+    saveRecord();                            // stash the session (if any) before clearing
     count = 0; elapsed = 0; jumpTimes = []; history.length = 0;
     jumpLog = []; breakLog = [];
     finished = false; lastTick = -1;
@@ -910,30 +985,32 @@
     }
   }
   // export the session: each +1 timing, its vertical amplitude, interruption gaps
-  async function exportData(){
-    const durationMs = Math.round(elapsed);
-    const interruptions = jumpLog.filter(j => j.iv && j.iv > 800).map(j => ({ tMs: j.t - j.iv, gapMs: j.iv }));
-    const data = {
-      app: 'skip-count', exportedAt: new Date().toISOString(),
-      algo, mode, durationMs, count,
-      avgCadencePerMin: durationMs > 0 ? +(count / (durationMs/60000)).toFixed(1) : 0,
-      ampUnit: 'normalized frame height · ' + (algo === 'B' ? 'ankle' : 'body-consensus'),
-      jumps: jumpLog,            // {n, t(ms), amp, iv(ms since previous +1)}
-      breaks: breakLog,          // {t(ms), retro(un-counted), pauseMs} — algo A trip pauses
-      interruptions              // gaps > 800ms between counted jumps
-    };
-    const json = JSON.stringify(data, null, 2);
-    const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-    const fname = 'skip-' + stamp + '.json';
-    const file = new File([json], fname, { type: 'application/json' });
+  // one export path for the live session and any saved record
+  function sessionData(){ return { jumps: jumpLog, breaks: breakLog, count, durMs: Math.round(elapsed), algo, mode }; }
+  function recordData(r){ return { jumps: r.jumps, breaks: r.breaks || [], count: r.count, durMs: r.durationMs, algo: r.algo, mode: r.mode }; }
+  async function shareFile(file, title){
     if(navigator.canShare && navigator.canShare({ files: [file] })){
-      try{ await navigator.share({ files: [file], title: '跳绳数据' }); return; }
+      try{ await navigator.share({ files: [file], title }); return; }
       catch(e){ if(e && e.name === 'AbortError') return; }   // user cancelled the share sheet
     }
     const url = URL.createObjectURL(file);
-    const a = document.createElement('a'); a.href = url; a.download = fname;
+    const a = document.createElement('a'); a.href = url; a.download = file.name;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  function exportJSON(d){
+    const interruptions = d.jumps.filter(j => j.iv && j.iv > 800).map(j => ({ tMs: j.t - j.iv, gapMs: j.iv }));
+    const data = {
+      app: 'skip-count', exportedAt: new Date().toISOString(),
+      algo: d.algo, mode: d.mode, durationMs: d.durMs, count: d.count,
+      avgCadencePerMin: d.durMs > 0 ? +(d.count / (d.durMs/60000)).toFixed(1) : 0,
+      ampUnit: 'normalized frame height · ' + (d.algo === 'B' ? 'ankle' : 'body-consensus'),
+      jumps: d.jumps,            // {n, t(ms), amp, iv(ms since previous +1)}
+      breaks: d.breaks,          // {t(ms), retro(un-counted), pauseMs} — algo A trip pauses
+      interruptions              // gaps > 800ms between counted jumps
+    };
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    shareFile(new File([JSON.stringify(data, null, 2)], 'skip-' + stamp + '.json', { type: 'application/json' }), '跳绳数据');
   }
 
   // ---------- pace + vertical-height chart (client-side canvas) ----------
@@ -946,20 +1023,20 @@
     }
     return out;
   }
-  function renderChart(){
+  function renderChart(d){
     const W=1600, H=780, cv=document.createElement('canvas'); cv.width=W; cv.height=H;
     const g=cv.getContext('2d');
     const INK='#0e1420',PAPER='#e9edf5',DIM='#8593ab',HOT='#ff4b3e',GO='#3ddc84',GOLD='#f5c344',LINE='#26324a',BLUE='#8fb0ff';
     const FONT='-apple-system,"PingFang SC","Helvetica Neue",Arial,sans-serif';
     g.fillStyle=INK; g.fillRect(0,0,W,H);
     const pL=72,pT=64,pB=H-58,pR=W-74, pW=pR-pL, pH=pB-pT;
-    const durS=Math.max(1,(jumpLog.length?jumpLog[jumpLog.length-1].t:elapsed)/1000);
-    const gaps=jumpLog.filter(j=>j.iv&&j.iv>800).map(j=>({a:(j.t-j.iv)/1000,b:j.t/1000,s:j.iv/1000}));
+    const durS=Math.max(1,(d.jumps.length?d.jumps[d.jumps.length-1].t:d.durMs)/1000);
+    const gaps=d.jumps.filter(j=>j.iv&&j.iv>800).map(j=>({a:(j.t-j.iv)/1000,b:j.t/1000,s:j.iv/1000}));
     // aggregate into 5-second segments (cleaner than per-jump)
     const BIN=5, nb=Math.max(1,Math.round(durS/BIN)), seg=[];
     for(let b=0;b<nb;b++){
       const t0=b*BIN, t1=(b===nb-1)? durS : (b+1)*BIN, sec=Math.max(0.1,t1-t0);
-      const inb=jumpLog.filter(j=>{ const s=j.t/1000; return s>=t0 && (b===nb-1? s<=t1+0.001 : s<t1); });
+      const inb=d.jumps.filter(j=>{ const s=j.t/1000; return s>=t0 && (b===nb-1? s<=t1+0.001 : s<t1); });
       const amps=inb.map(j=>j.amp).filter(v=>v!=null);
       seg.push({ t0,t1, cx:(t0+t1)/2, pace: inb.length/(sec/60),
         ht: amps.length ? amps.reduce((a,c)=>a+c,0)/amps.length*100 : null });
@@ -986,7 +1063,7 @@
       g.fillText(Math.round(s.pace),(x0+x1)/2,y-5);
     }
     // reference lines
-    const avg=count/(durS/60);
+    const avg=d.count/(durS/60);
     g.setLineDash([6,5]); g.strokeStyle='rgba(233,237,245,.6)'; g.beginPath(); g.moveTo(pL,Yc(avg)); g.lineTo(pR,Yc(avg)); g.stroke();
     g.strokeStyle=BLUE; g.setLineDash([2,4]); g.beginPath(); g.moveTo(pL,Yc(160)); g.lineTo(pR,Yc(160)); g.stroke(); g.setLineDash([]);
     g.textAlign='left'; g.textBaseline='bottom'; g.fillStyle=PAPER; g.font='13px '+FONT; g.fillText('平均 '+Math.round(avg)+'/分',pL+4,Yc(avg)-3);
@@ -1002,7 +1079,7 @@
     for(const gp of gaps){ const cx=(X(gp.a)+X(gp.b))/2; g.fillText('绊绳',cx,pT+4); g.fillText(gp.s.toFixed(1)+'s',cx,pT+20); }
     // title + axis labels + legend
     g.fillStyle=PAPER; g.textAlign='center'; g.textBaseline='top'; g.font='bold 18px '+FONT;
-    g.fillText('跳绳配速 + 垂直高度（每5秒）· '+count+' 次 / '+durS.toFixed(1)+'s（'+Math.round(avg)+'/分）· 绊绳 '+gaps.length+' 次 · 算法 '+algo, W/2, 14);
+    g.fillText('跳绳配速 + 垂直高度（每5秒）· '+d.count+' 次 / '+durS.toFixed(1)+'s（'+Math.round(avg)+'/分）· 绊绳 '+gaps.length+' 次 · 算法 '+d.algo, W/2, 14);
     g.save(); g.translate(20,H/2); g.rotate(-Math.PI/2); g.textAlign='center'; g.font='13px '+FONT; g.fillStyle=PAPER; g.fillText('配速 (次/分钟)',0,0); g.restore();
     g.save(); g.translate(W-14,H/2); g.rotate(Math.PI/2); g.textAlign='center'; g.fillStyle=GOLD; g.fillText('垂直高度 (% 画面高度)',0,0); g.restore();
     g.fillStyle=DIM; g.textAlign='center'; g.textBaseline='top'; g.font='13px '+FONT; g.fillText('时间 (秒)',W/2,H-24);
@@ -1012,20 +1089,60 @@
     g.strokeStyle=GOLD; g.lineWidth=3; g.beginPath(); g.moveTo(pL+8,pB-12); g.lineTo(pL+40,pB-12); g.stroke(); g.fillStyle=PAPER; g.fillText('垂直高度 (每5秒均值)',pL+46,pB-12);
     return cv;
   }
-  function exportChart(){
-    if(!jumpLog.length){ hintEl.textContent='还没有数据，先跳几下再导出图表。'; hintEl.style.display=''; return; }
-    const cv=renderChart();
+  function exportChart(d){
+    if(!d.jumps.length){ hintEl.textContent='还没有数据，先跳几下再导出图表。'; hintEl.style.display=''; return; }
+    const cv=renderChart(d);
     const fname='skip-chart-'+new Date().toISOString().replace(/[:.]/g,'-').slice(0,19)+'.png';
-    cv.toBlob(async (blob)=>{
-      if(!blob) return;
-      const file=new File([blob],fname,{type:'image/png'});
-      if(navigator.canShare && navigator.canShare({files:[file]})){
-        try{ await navigator.share({files:[file],title:'跳绳配速图'}); return; }
-        catch(e){ if(e && e.name==='AbortError') return; }
-      }
-      const url=URL.createObjectURL(file); const a=document.createElement('a'); a.href=url; a.download=fname;
-      document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000);
-    }, 'image/png');
+    cv.toBlob((blob)=>{ if(blob) shareFile(new File([blob],fname,{type:'image/png'}), '跳绳配速图'); }, 'image/png');
+  }
+
+  // ---------- history (Apple Health-style saved records) ----------
+  const HKEY = 'skip-history-v1';
+  let records = [];
+  try{ records = JSON.parse(localStorage.getItem(HKEY)) || []; }catch(e){}
+  let recSaved = true;                       // becomes false once new jumps land
+  let sheetIdx = -1;
+  function persistRecords(){ try{ localStorage.setItem(HKEY, JSON.stringify(records)); }catch(e){} }
+  function saveRecord(){
+    if(recSaved || count <= 0 || !jumpLog.length) return;
+    recSaved = true;
+    records.unshift({
+      at: Date.now(), mode, algo, count,
+      durationMs: Math.round(Math.max(elapsed, jumpLog[jumpLog.length-1].t)),
+      jumps: jumpLog.slice(), breaks: breakLog.slice()
+    });
+    if(records.length > 200) records.length = 200;   // keep localStorage bounded
+    persistRecords();
+  }
+  const fmtDur = ms => { const s=Math.round(ms/1000); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); };
+  const fmtDate = t => { const d=new Date(t); return (d.getMonth()+1)+'月'+d.getDate()+'日 '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); };
+  const recAvg = r => r.durationMs>0 ? Math.round(r.count/(r.durationMs/60000)) : 0;
+  function renderHistory(){
+    const tot = records.reduce((a,r)=>a+r.count,0);
+    const totMs = records.reduce((a,r)=>a+r.durationMs,0);
+    histSum.innerHTML =
+      '<div><b class="c-lime">'+records.length+'</b><span>次训练</span></div>'+
+      '<div><b class="c-white">'+tot+'</b><span>总跳数</span></div>'+
+      '<div><b class="c-pink">'+fmtDur(totMs)+'</b><span>总时长</span></div>';
+    if(!records.length){
+      histList.innerHTML = '<div class="hist-empty">还没有记录<br>跳完一组（计时结束或清零）会自动保存</div>';
+      return;
+    }
+    histList.innerHTML = '';
+    records.forEach((r,i)=>{
+      const b = document.createElement('button');
+      b.className = 'hist-row'; b.dataset.i = i;
+      b.innerHTML = '<span class="val">'+r.count+'<small>次</small></span>'+
+        '<span class="meta">'+fmtDur(r.durationMs)+' · '+recAvg(r)+'/分'+(r.mode==='timed'?' · 1分钟':'')+'</span>'+
+        '<span class="date">'+fmtDate(r.at)+'</span><span class="chev">›</span>';
+      histList.appendChild(b);
+    });
+  }
+  function openSheet(i){
+    sheetIdx = i;
+    const r = records[i];
+    sheetTitle.textContent = fmtDate(r.at)+' · '+r.count+' 次 · '+fmtDur(r.durationMs);
+    sheetEl.hidden = false;
   }
   function setMode(m){
     if(m === mode) return;
@@ -1069,8 +1186,22 @@
     perfEl.hidden = settingsEl.hidden;                 // show the perf readout with the panel
     btnSettings.classList.toggle('on', !settingsEl.hidden);
   });
-  btnExport.addEventListener('click', exportData);
-  btnChart.addEventListener('click', exportChart);
+  btnExport.addEventListener('click', () => exportJSON(sessionData()));
+  btnChart.addEventListener('click', () => exportChart(sessionData()));
+  btnHistory.addEventListener('click', () => { saveRecord(); renderHistory(); histPage.hidden = false; });
+  histDone.addEventListener('click', () => { histPage.hidden = true; });
+  histList.addEventListener('click', (e) => {
+    const row = e.target.closest('.hist-row');
+    if(row) openSheet(+row.dataset.i);
+  });
+  document.getElementById('sheetChart').addEventListener('click', () => { if(records[sheetIdx]) exportChart(recordData(records[sheetIdx])); sheetEl.hidden = true; });
+  document.getElementById('sheetJSON').addEventListener('click', () => { if(records[sheetIdx]) exportJSON(recordData(records[sheetIdx])); sheetEl.hidden = true; });
+  document.getElementById('sheetDelete').addEventListener('click', () => {
+    if(records[sheetIdx]){ records.splice(sheetIdx, 1); persistRecords(); renderHistory(); }
+    sheetEl.hidden = true;
+  });
+  document.getElementById('sheetCancel').addEventListener('click', () => { sheetEl.hidden = true; });
+  sheetEl.addEventListener('click', (e) => { if(e.target === sheetEl) sheetEl.hidden = true; });
   document.addEventListener('visibilitychange', ()=>{ if(document.hidden && running) stop(); });
 
   // ---------- boot: start downloading the pose model right away ----------
